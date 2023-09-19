@@ -1,25 +1,28 @@
 const UserDAO = require('../DAO/userDAO.js')
-const login = (username, password) => {
-    UserDAO.getUserDAO(username)
+const login = (req, res) => {
+    UserDAO.getUserDAO(req.body.username)
     .then((data) => {
-        return data.Item;
-    })
-    .catch((err) => {
-        console.log("user not found")
-        console.error(err);
+        if(data.Item.password != req.body.password){
+            res.status(400).send('Wrong Password');
+        }
+        else {
+            res.status(200).send('Login Successful');
+        }
+    }).catch((err) => {
+        res.status(400).send(err);
     })
 }
-const register = (username, password, admin) => {
-    UserDAO.registerUserDAO(username, password, admin)
+const register = (req, res) =>{
+    UserDAO.registerUserDAO(req.body.username, req.body.password, req.body.admin)
     .then(() => {
-        return "Succesfully uploaded";
+        res.status(200).send('Succesfully uploaded')
     })
     .catch((err) => {
         if(err.code == 'ConditionalCheckFailedException'){
-            return "Duplicate";
+            res.status(400).send('Duplicate')
         }
         else {
-          return "Bad Request";
+            res.status(400).send('Bad Request')
         }
     })
 }
