@@ -1,22 +1,32 @@
-const service = require('/js/Service/userService.js');
-const bodyParser = require('body-parser');
 const express = require('express');
-var jsonParser = bodyParser.json()
-
+const uuid = require('uuid');
+const UserService = require('./src/js/Service/userService.js');
+const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000;
 
-app.use('/login', jsonParser, (req, res) => {
-    service.login(req.body.username, req.body.password);
-    
+app.use(bodyParser.json());
+
+app.get('/login', (req, res) => {
+    item = UserService.login(req.body.username, req.body.password);
+    if(item.password != password){
+        console.log("wrong password")
+    }
+    console.log(data);
 });
-app.use('/register', (req, res) =>{
-    
+app.post('/register', (req, res) =>{
+    let response = UserService.register(req.body.username, req.body.password, req.body.admin);
+    console.log(response)
+    switch(response){
+        case "Succesfully uploaded":
+            break;
+        case "Duplicate":
+            break;
+        case "Bad Request":
+            break;
+    }
 });
 
-app.listen(PORT, function (err) {
-    if (err) console.log(err);
-    console.log("Server listening on PORT", PORT);
-});
-
-modules.exports = app;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+})
