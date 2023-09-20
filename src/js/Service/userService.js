@@ -1,16 +1,24 @@
 const UserDAO = require('../DAO/userDAO.js')
 const login = (req, res) => {
-    UserDAO.getUserDAO(req.body.username)
-    .then((data) => {
-        if(data.Item.password != req.body.password){
-            res.status(400).send('Wrong Password');
-        }
-        else {
-            res.status(200).send('Login Successful');
-        }
-    }).catch((err) => {
-        res.status(400).send(err);
-    })
+    if(req.body.username == NULL || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
+        res.status(400).send("Bad Request");
+    }
+    else{
+        UserDAO.getUserDAO(req.body.username)
+        .then((data) => {
+            if(data.Item == undefined){
+                res.status(400).send('User does not exist');
+            }
+            else if(data.Item.password != req.body.password){
+                res.status(400).send('Wrong Password');
+            }
+            else {
+                res.status(200).send('Login Successful');
+            }
+        }).catch((err) => {
+            res.status(400).send(err);
+        })
+    }
 }
 const register = (req, res) =>{
     UserDAO.registerUserDAO(req.body.username, req.body.password, req.body.admin)

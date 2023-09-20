@@ -13,16 +13,16 @@ const getUserDAO = (Username) => {
     return dynamoDB.get(params).promise();
 };
 const registerUserDAO = (Username, password, admin) => {
-        const params = {
-            TableName: 'User_Table',
-            Item: {
-                'Username': `${Username}`,
-                'password': `${password}`,
-                'admin': admin
-            },
-            ConditionExpression: 'attribute_not_exists(Username)'
-        };
-        return dynamoDB.put(params).promise();
+    const params = {
+        TableName: 'User_Table',
+        Item: {
+            'Username': `${Username}`,
+            'password': `${password}`,
+            'admin': admin
+        },
+        ConditionExpression: 'attribute_not_exists(Username)'
+    };
+    return dynamoDB.put(params).promise();
 };
 
 module.exports = {registerUserDAO, getUserDAO};
