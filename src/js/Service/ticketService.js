@@ -22,7 +22,7 @@ const submit = (req, res) => {
                 let ticketID = uuid.v4();
                 TicketDAO.submitTicketDAO(ticketID, payload.username, req.body.description, ticketType, req.body.amount)
                 .then(() => {
-                    res.status(202).json({message: 'Succesfully Uploaded', genTicketID: ticketID});
+                    res.status(201).json({message: 'Succesfully Uploaded', genTicketID: ticketID});
                 })
                 .catch((err) => {
                     console.log(err);
@@ -62,7 +62,7 @@ const arbitrate = (req, res) => {
                 else{
                     TicketDAO.arbitrateTicketDAO(req.body.ticket_id, req.body.decision, payload.username)
                     .then(() => {
-                        res.status(202).send('Succesfully Updated');
+                        res.status(200).send('Succesfully Updated');
                     })
                     .catch((err) => {
                         console.log(err);
@@ -99,7 +99,7 @@ const viewTickets = (req, res) => {
         if(payload.admin === 'admin') {//get all pending
             TicketDAO.viewTicketsByDAO(payload.username, req.query.type, true)
             .then((data) => {
-                res.status(202).send(data);
+                res.status(200).send(data);
             })
             .catch((err) => {
                 console.log(err);
@@ -112,7 +112,7 @@ const viewTickets = (req, res) => {
             
             TicketDAO.viewTicketsByDAO(payload.username, typeCheck, false)
             .then((data) => {
-                res.status(202).send(data);
+                res.status(200).send(data);
             })
             .catch((err) => {
                 console.log(err);

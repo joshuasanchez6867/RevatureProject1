@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 //userService
 app.post('/login', UserService.login);
 app.post('/register', UserService.register);
+app.put('/changeRole', UserService.changeRole);
+
 //ticketService
 app.post('/submit', TicketService.submit);
 app.put('/arbitrate', TicketService.arbitrate);

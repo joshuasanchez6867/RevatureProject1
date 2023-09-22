@@ -12,6 +12,7 @@ const getUserDAO = (Username) => {
     };
     return dynamoDB.get(params).promise();
 };
+
 const registerUserDAO = (Username, password, role) => {
     const params = {
         TableName: 'User_Table',
@@ -24,5 +25,21 @@ const registerUserDAO = (Username, password, role) => {
     };
     return dynamoDB.put(params).promise();
 };
+const changeRoleDAO = (Username, admin) => {
+    const params = {
+        TableName: 'User_Table',
+        Key: {
+            'Username': `${Username}`
+        },
+        UpdateExpression: 'set #r = :r',
+        ExpressionAttributeValues: {
+          ':r': admin
+        },
+        ExpressionAttributeNames: {
+            "#r": "role"
+        }
+    };
+    return dynamoDB.update(params).promise();
+};
 
-module.exports = {registerUserDAO, getUserDAO};
+module.exports = {registerUserDAO, getUserDAO, changeRoleDAO};

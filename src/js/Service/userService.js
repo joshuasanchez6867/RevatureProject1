@@ -45,7 +45,7 @@ const register = (req, res) => {
     }
     UserDAO.registerUserDAO(req.body.username, req.body.password, userRole)
     .then(() => {
-        res.status(200).send('Succesfully uploaded')
+        res.status(201).send('Succesfully uploaded')
     })
     .catch((err) => {
         if(err.code == 'ConditionalCheckFailedException'){
@@ -56,4 +56,38 @@ const register = (req, res) => {
         }
     })
 }
-module.exports = {login, register}
+const changeRole = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]; // ['Bearer', '<token>'];
+    let roleUser = req.body.role;
+    if(req.body.username == null || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
+        res.status(400).send("Username Doesnt Exist");
+    }
+    if(roleUser !== 'employee' && roleUser !== 'admin'){
+        roleUser = 'employee';
+
+    }
+    jwtUtil.verifyTokenAndReturnPayload(token)
+    .then((payload) => {
+        if(payload.admin === 'admin') {
+            UserDAO.changeRoleDAO(req.body.username, roleUser)
+            .then((data) => {
+                console.log(data);
+                res.status(200).send({message: `Changed ${req.body.username} to a ${roleUser}`});
+            })
+            .catch((err) =>{
+                console.log(err);
+                res.status(400).send({error: "DAO Failed", data: err});
+            })
+        }
+        else {
+            res.status(403).send({message: `You are not an Employee, you are an Administrator`})
+        }
+    }).catch((err) => {
+        console.error(err);
+        res.statusCode(401).send({
+            message: "Failed to Authenticate Token"
+        })
+    }) 
+
+}
+module.exports = {login, register, changeRole}
