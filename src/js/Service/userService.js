@@ -1,7 +1,9 @@
 const UserDAO = require('../DAO/userDAO.js')
+const jwtUtil = require('../../../utility/jwt_util.js');
+
 const login = (req, res) => {
-    if(req.body.username == NULL || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
-        res.status(400).send("Bad Request");
+    if(req.body.username == null || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
+        res.status(400).send("Invalid Username");
     }
     else{
         UserDAO.getUserDAO(req.body.username)
@@ -13,15 +15,33 @@ const login = (req, res) => {
                 res.status(400).send('Wrong Password');
             }
             else {
-                res.status(200).send('Login Successful');
+                console.log(data.Item)
+                const token = jwtUtil.createJWT(data.Item.Username, data.Item.role);
+                res.send({
+                    message : "Successfully Authenticated",
+                    token : token
+                })
+                
+                res.status(200);
+
             }
         }).catch((err) => {
             res.status(400).send(err);
         })
     }
 }
-const register = (req, res) =>{
-    UserDAO.registerUserDAO(req.body.username, req.body.password, req.body.admin)
+const register = (req, res) => {
+    let userRole = req.body.role;
+    if(req.body.username == null || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
+        res.status(400).send("Invalid Username");
+    }
+    else if(req.body.password == null || req.body.password == ''|| typeof req.body.password  !== 'string' || req.body.password == undefined){
+        res.status(400).send("Invalid Username");
+    }
+    else if(userRole !== 'employee' && userRole !== 'admin'){
+        userRole = 'employee';
+    }
+    UserDAO.registerUserDAO(req.body.username, req.body.password, userRole)
     .then(() => {
         res.status(200).send('Succesfully uploaded')
     })
@@ -34,4 +54,4 @@ const register = (req, res) =>{
         }
     })
 }
-module.exports = {login, register};
+module.exports = {login, register}

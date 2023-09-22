@@ -12,13 +12,13 @@ const getUserDAO = (Username) => {
     };
     return dynamoDB.get(params).promise();
 };
-const registerUserDAO = (Username, password, admin) => {
+const registerUserDAO = (Username, password, role) => {
     const params = {
         TableName: 'User_Table',
         Item: {
             'Username': `${Username}`,
             'password': `${password}`,
-            'admin': admin
+            'role': `${role}`
         },
         ConditionExpression: 'attribute_not_exists(Username)'
     };
