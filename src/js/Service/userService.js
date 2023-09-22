@@ -1,6 +1,7 @@
 const UserDAO = require('../DAO/userDAO.js')
 const jwtUtil = require('../../../utility/jwt_util.js');
 
+//tested and done
 const login = (req, res) => {
     if(req.body.username == null || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){
         res.status(400).send("Invalid Username");
@@ -12,7 +13,7 @@ const login = (req, res) => {
                 res.status(400).send('User does not exist');
             }
             else if(data.Item.password != req.body.password){
-                res.status(400).send('Wrong Password');
+                res.status(403).send('Wrong Password');
             }
             else {
                 console.log(data.Item)
@@ -30,6 +31,7 @@ const login = (req, res) => {
         })
     }
 }
+//tested and done
 const register = (req, res) => {
     let userRole = req.body.role;
     if(req.body.username == null || req.body.username == ''|| typeof req.body.username  !== 'string' || req.body.username == undefined){

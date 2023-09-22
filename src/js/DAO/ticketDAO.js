@@ -44,8 +44,8 @@ const getTicketByIDDAO = (ticket_id) => {
     }
     return dynamoDB.get(params).promise();
 };
-const viewTicketsByStatusDAO = (username, statusType, getAllFlag) =>{
-    if(getAllFlag === true){
+const viewTicketsByDAO = (username, type, ignoreUsername) =>{
+    if(ignoreUsername === true){//admins
         const params = {
             TableName: 'TicketTable',
             FilterExpression : '#s = :stype',
@@ -58,20 +58,35 @@ const viewTicketsByStatusDAO = (username, statusType, getAllFlag) =>{
         }
         return dynamoDB.scan(params).promise();
     }
-    else{
-        console.log(username);
-        console.log(statusType);
-        const params = {
-            TableName: 'TicketTable',
-            FilterExpression: "#n = :ntype",
-            ExpressionAttributeValues: {
-                ":ntype": username
-            },
-            ExpressionAttributeNames: {
-                "#n": "Username_FK"
+    else {//employees
+        if(type !== undefined){
+            const params = {
+                TableName: 'TicketTable',
+                FilterExpression: "#n = :ntype AND #t = :ttype",
+                ExpressionAttributeValues: {
+                    ":ntype": username,
+                    ":ttype": type
+                },
+                ExpressionAttributeNames: {
+                    "#n": "Username_FK",
+                    "#t": "type"
+                }
             }
+            return dynamoDB.scan(params).promise();
+        }else{
+            const params = {
+                TableName: 'TicketTable',
+                FilterExpression: "#n = :ntype",
+                ExpressionAttributeValues: {
+                    ":ntype": username
+                },
+                ExpressionAttributeNames: {
+                    "#n": "Username_FK"
+                }
+            }
+            return dynamoDB.scan(params).promise();
         }
-        return dynamoDB.scan(params).promise();
+
     }
 }
-module.exports = {submitTicketDAO, arbitrateTicketDAO, getTicketByIDDAO, viewTicketsByStatusDAO};
+module.exports = {submitTicketDAO, arbitrateTicketDAO, getTicketByIDDAO, viewTicketsByDAO};
