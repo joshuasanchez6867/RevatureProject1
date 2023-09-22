@@ -62,7 +62,9 @@ const viewTicketsByDAO = (username, type, ignoreUsername) =>{
         if(type !== undefined){
             const params = {
                 TableName: 'TicketTable',
-                FilterExpression: "#n = :ntype AND #t = :ttype",
+                IndexName : "Username_FK-index",
+                KeyConditionExpression: "#n = :ntype",
+                FilterExpression: "#t = :ttype",
                 ExpressionAttributeValues: {
                     ":ntype": username,
                     ":ttype": type
@@ -72,11 +74,12 @@ const viewTicketsByDAO = (username, type, ignoreUsername) =>{
                     "#t": "type"
                 }
             }
-            return dynamoDB.scan(params).promise();
+            return dynamoDB.query(params).promise();
         }else{
             const params = {
                 TableName: 'TicketTable',
-                FilterExpression: "#n = :ntype",
+                IndexName : "Username_FK-index",
+                KeyConditionExpression: "#n = :ntype",
                 ExpressionAttributeValues: {
                     ":ntype": username
                 },
@@ -84,7 +87,7 @@ const viewTicketsByDAO = (username, type, ignoreUsername) =>{
                     "#n": "Username_FK"
                 }
             }
-            return dynamoDB.scan(params).promise();
+            return dynamoDB.query(params).promise();
         }
 
     }
