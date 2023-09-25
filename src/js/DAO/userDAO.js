@@ -5,21 +5,20 @@ AWS.config.update({
 dynamoDB = new AWS.DynamoDB.DocumentClient();
 const getUserDAO = (Username) => {
     const params = {
-        TableName: 'User_Table',
+        TableName: 'UserTable',
         Key: {
-            'Username': `${Username}`
+            'Username': Username
         }
     };
     return dynamoDB.get(params).promise();
 };
-
 const registerUserDAO = (Username, password, role) => {
     const params = {
-        TableName: 'User_Table',
+        TableName: 'UserTable',
         Item: {
-            'Username': `${Username}`,
-            'password': `${password}`,
-            'role': `${role}`
+            'Username': Username,
+            'password': password,
+            'role': role
         },
         ConditionExpression: 'attribute_not_exists(Username)'
     };
@@ -27,19 +26,18 @@ const registerUserDAO = (Username, password, role) => {
 };
 const changeRoleDAO = (Username, admin) => {
     const params = {
-        TableName: 'User_Table',
+        TableName: 'UserTable',
         Key: {
-            'Username': `${Username}`
+            'Username': Username
         },
         UpdateExpression: 'set #r = :r',
         ExpressionAttributeValues: {
           ':r': admin
         },
         ExpressionAttributeNames: {
-            "#r": "role"
+            '#r': 'role'
         }
     };
     return dynamoDB.update(params).promise();
 };
-
 module.exports = {registerUserDAO, getUserDAO, changeRoleDAO};

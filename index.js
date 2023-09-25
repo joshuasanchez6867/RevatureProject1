@@ -1,22 +1,10 @@
 const express = require('express');
-const UserService = require('./src/js/Router/userService.js');
-const TicketService = require('./src/js/Router/ticketService.js');
-
 const bodyParser = require('body-parser');
+const router = require('./src/js/Router/router.js');
 const app = express();
 const PORT = 3000;
-
 app.use(bodyParser.json());
-//userService
-app.post('/login', UserService.login);
-app.post('/register', UserService.register);
-app.put('/changeRole', UserService.changeRole);
-
-//ticketService
-app.post('/submit', TicketService.submit);
-app.put('/arbitrate', TicketService.arbitrate);
-app.get('/viewTickets', TicketService.viewTickets);
-
+app.use(router);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-})
+});
