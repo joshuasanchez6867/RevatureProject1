@@ -1,6 +1,6 @@
 const express = require('express');
-const UserService = require('./src/js/Service/userService.js');
-const TicketService = require('./src/js/Service/ticketService.js');
+const UserService = require('./src/js/Router/userService.js');
+const TicketService = require('./src/js/Router/ticketService.js');
 
 const bodyParser = require('body-parser');
 const app = express();
