@@ -4,7 +4,6 @@ AWS.config.update({
 });
 dynamoDB = new AWS.DynamoDB.DocumentClient(); 
 const submitTicketDAO = (ticket_id, username, description, type, amount) => {
-    
     const params = {
         TableName: 'TicketTable',
         Item: {
@@ -17,24 +16,24 @@ const submitTicketDAO = (ticket_id, username, description, type, amount) => {
         }
     };
     return dynamoDB.put(params).promise();
-}
+};
 const arbitrateTicketDAO = (ticket_id, decision, username) => {
     const params = {
         TableName: 'TicketTable',
         Key: {
-            'TicketID': ticket_id,
+            'TicketID': ticket_id
         },
         UpdateExpression: 'set #s = :r, resolver = :p', 
         ExpressionAttributeValues: {
           ':r': decision,
-          ':p': username,
+          ':p': username
         },
         ExpressionAttributeNames: {
-            "#s": "status"
+            '#s': 'status'
         }
     };
     return dynamoDB.update(params).promise();
-}
+};
 const getTicketByIDDAO = (ticket_id) => {
     const params = {
         TableName: 'TicketTable',
@@ -44,52 +43,51 @@ const getTicketByIDDAO = (ticket_id) => {
     }
     return dynamoDB.get(params).promise();
 };
-const viewTicketsByDAO = (username, type, ignoreUsername) =>{
-    if(ignoreUsername === true){//admins
+const viewTicketsByDAO = (username, type, ignoreUsername) => {
+    if (ignoreUsername === true) {
         const params = {
             TableName: 'TicketTable',
-            FilterExpression : '#s = :stype',
+            IndexName : 'status-index',
+            KeyConditionExpression: '#s = :stype',
             ExpressionAttributeValues: {
-                ":stype": "PENDING",
+                ':stype': 'PENDING'
             },
             ExpressionAttributeNames: {
-                "#s": "status",
+                '#s': 'status'
             }
         }
-        return dynamoDB.scan(params).promise();
-    }
-    else {//employees
-        if(type !== undefined){
+        return dynamoDB.query(params).promise();
+    } else {
+        if (type) {
             const params = {
                 TableName: 'TicketTable',
-                IndexName : "Username_FK-index",
-                KeyConditionExpression: "#n = :ntype",
-                FilterExpression: "#t = :ttype",
+                IndexName : 'Username_FK-index',
+                KeyConditionExpression: '#n = :ntype',
+                FilterExpression: '#t = :ttype',
                 ExpressionAttributeValues: {
-                    ":ntype": username,
-                    ":ttype": type
+                    ':ntype': username,
+                    ':ttype': type
                 },
                 ExpressionAttributeNames: {
-                    "#n": "Username_FK",
-                    "#t": "type"
+                    '#n': 'Username_FK',
+                    '#t': 'type'
                 }
             }
             return dynamoDB.query(params).promise();
-        }else{
+        } else {
             const params = {
                 TableName: 'TicketTable',
-                IndexName : "Username_FK-index",
-                KeyConditionExpression: "#n = :ntype",
+                IndexName : 'Username_FK-index',
+                KeyConditionExpression: '#n = :ntype',
                 ExpressionAttributeValues: {
-                    ":ntype": username
+                    ':ntype': username
                 },
                 ExpressionAttributeNames: {
-                    "#n": "Username_FK"
+                    '#n': 'Username_FK'
                 }
             }
             return dynamoDB.query(params).promise();
         }
-
     }
-}
+};
 module.exports = {submitTicketDAO, arbitrateTicketDAO, getTicketByIDDAO, viewTicketsByDAO};
