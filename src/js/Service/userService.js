@@ -41,7 +41,7 @@ const register = (req, res) => {
         })
         .catch((err) => {
             if (err.code == 'ConditionalCheckFailedException') {
-                res.status(400).send({error: 'Duplicate'});
+                res.status(400).send({error: 'Duplicate Username'});
             } else {
                 res.status(400).send({error: 'Bad Request'});
             }
