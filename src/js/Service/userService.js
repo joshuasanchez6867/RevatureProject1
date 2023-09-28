@@ -1,6 +1,5 @@
 const UserDAO = require('../DAO/userDAO.js')
 const jwtUtil = require('../../../utility/jwt_util.js');
-
 const login = (req, res) => {
     if (!req.body.username || typeof req.body.username  !== typeof 'string') {
         res.status(400).send({message: 'Invalid Username'});
@@ -22,7 +21,7 @@ const login = (req, res) => {
             res.status(400).send({error: 'Bad Request'});
         })
     }
-}
+};
 const register = (req, res) => {
     if (!req.body.username || typeof req.body.username !== typeof 'string') {
         res.status(400).send({error: 'Invalid Username'});
@@ -37,7 +36,7 @@ const register = (req, res) => {
         }
         UserDAO.registerUserDAO(req.body.username, req.body.password, userRole)
         .then(() => {
-            res.status(201).send({message: 'Succesfully Uploaded'});
+            res.status(201).send({message: 'Succesfully Registered'});
         })
         .catch((err) => {
             if (err.code == 'ConditionalCheckFailedException') {
@@ -47,7 +46,7 @@ const register = (req, res) => {
             }
         })
     }
-}
+};
 const changeRole = (req, res) => {
     if (!req.body.username || typeof req.body.username  !== 'string') {
         res.status(400).send({error: 'Username Doesnt Exist'});
@@ -74,5 +73,5 @@ const changeRole = (req, res) => {
             res.status(401).send({error: 'Failed to Authenticate Token'});
         }) 
     }
-}
+};
 module.exports = {login, register, changeRole}
