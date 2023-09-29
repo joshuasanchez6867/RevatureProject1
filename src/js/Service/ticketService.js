@@ -52,13 +52,17 @@ const arbitrate = (req, res) => {
                         res.status(403).send({error: 'Cannot change tickets that have already been decided on'});
                     }
                     else {
-                        TicketDAO.arbitrateTicketDAO(req.query.ticket_id, req.body.decision, payload.username)
-                        .then(() => {
-                            res.status(200).send({message: 'Succesfully Updated'});
-                        })
-                        .catch(() => {
-                            res.status(400).send({error: 'Bad Request'});
-                        })
+                        if(payload.username === data.Item.Username_FK) {
+                            res.status(403).send({message: 'You cannot arbitrate your own ticket'});
+                        } else {
+                            TicketDAO.arbitrateTicketDAO(req.query.ticket_id, req.body.decision, payload.username)
+                            .then(() => {
+                                res.status(200).send({message: 'Succesfully Updated'});
+                            })
+                            .catch(() => {
+                                res.status(400).send({error: 'Bad Request'});
+                            })
+                        }
                     }
                 })
                 .catch(() => {
