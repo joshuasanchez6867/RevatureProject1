@@ -67,7 +67,7 @@ const changeRole = (req, res) => {
                     res.status(400).send({error: 'DAO Failed'});
                 })
             } else {
-                res.status(403).send({error: 'You are not an Employee, you are an Administrator'});
+                res.status(403).send({error: 'You are not an Administrator, you are an Employee'});
             }
         }).catch(() => {
             res.status(401).send({error: 'Failed to Authenticate Token'});
