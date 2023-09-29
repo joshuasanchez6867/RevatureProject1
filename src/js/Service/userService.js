@@ -49,7 +49,7 @@ const register = (req, res) => {
 };
 const changeRole = (req, res) => {
     if (!req.body.username || typeof req.body.username  !== 'string') {
-        res.status(400).send({error: 'Username Doesnt Exist'});
+        res.status(400).send({error: 'Invalid Username'});
     } else {
         const token = req.headers.authorization.split(' ')[1];
         jwtUtil.verifyTokenAndReturnPayload(token)
@@ -63,8 +63,12 @@ const changeRole = (req, res) => {
                 .then(() => {
                     res.status(200).send({message:`Changed ${req.body.username} to a/an ${roleUser}`});
                 })
-                .catch(() => {
-                    res.status(400).send({error: 'DAO Failed'});
+                .catch((err) => {
+                    if (err.code == 'ConditionalCheckFailedException') {
+                        res.status(400).send({error: 'User Does Not Exist'});
+                    } else {
+                        res.status(400).send({error: 'DAO Failed'});
+                    }
                 })
             } else {
                 res.status(403).send({error: 'You are not an Administrator, you are an Employee'});

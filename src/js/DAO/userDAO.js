@@ -31,6 +31,7 @@ const changeRoleDAO = (Username, admin) => {
             'Username': Username
         },
         UpdateExpression: 'set #r = :r',
+        ConditionExpression: 'attribute_exists(Username)',
         ExpressionAttributeValues: {
           ':r': admin
         },
